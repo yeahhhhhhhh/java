@@ -11,7 +11,7 @@ public class JDBCUtils {
 	private static Properties prop = null;
 	private JDBCUtils(){}
 	
-	//建立连接
+	//建立连接 123
 	public static Connection getConn(String url,String name,String password) throws ClassNotFoundException, SQLException{
 		//注册数据库驱动
 		Class.forName("com.mysql.jdbc.Driver");
