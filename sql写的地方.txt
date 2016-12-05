@@ -1,0 +1,240 @@
+mysql -u root -p
+show databases；显示你有的数据库
+如果要退出mysql数据库，输入exit;
+
+分页查询
+select * from task order by taskdate desc limit ?,?;
+
+修改表名：alter table 旧表名 rename 新表名
+alter table user2 rename user3;
+
+修改字段的数据类型: alter table 表名 modify 属性名 数据类型
+alter table user3 modify id int primary key auto_increment;
+
+修改字段名：alter table 表名 change 旧属性命 新属性名 新数据类型
+alter table user3 change name username varchar(20);
+
+增加字段:alter table 表名 add 属性名1 数据类型
+
+
+create table if not exists user(
+ name varchar(20) not null
+);
+insert into user(name) values('jack');
+insert into user(name) values('marry');
+
+mysqldump -u root -p mysql2 >d:\mysql2.sql (mysql特有的语句)
+
+source d:\mysql2.sql;  (mysql特有的语句)
+
+select * from user3;
+
+创建一张表：
+create table user(
+id int primary key auto_increment,
+username varchar(20),
+password varchar(20),
+gender varchar(20),
+nickname varchar(20),
+email varchar(30)
+);
+
+create table account(
+name varchar(20),
+money double
+);
+insert into account values('小王',1000);
+insert into account values('小邹',1000);
+update account set money=money-100 where name='小王';
+update account set money=money+100 where name='小邹';
+start transaction 开启事务
+rollback 回滚事务
+commit提交事务
+
+desc user;
+
+insert into user(id,name,password,birthday) values(1,'杰克','000000','2016-03-18');
+insert into user(id,name,password,birthday) values(4,'marry','20000','2016-03-18');
+insert into user(id,name,password,birthday) values(2,'marry','20000',null);
+insert into user3(username,password,nickname,email) values("why","123456","why","136046355@qq.com");
+
+set character_set_results=gbk;
+set character_set_client=gbk;
+
+长期需要在my.ini中修改，只需要改客户端
+
+使用updata 修改表中的数据
+update user set password=123 where name='杰克';
+
+使用select查询表中的数据
+select name password from user;
+select distinct id,name from user;
+
+使用as加上别名
+select name as 姓名,password+1 as 密码 from user;
+select name as 姓名,password as 密码 from user;
+
+使用where过滤查询
+select * 
+from user
+where name='marry';
+
+使用between and 查询
+select *
+from user
+where password between 122 and 123;
+
+查询密码为123，000000
+select *
+from user
+where password in(123,000000);
+或者
+select *
+from user
+where password=123 or password=000000;
+
+模糊查询like
+select *
+from user
+where name like 'j%';   百分号代表零个，一个，或多个字符，下划线只代表一个字符
+
+select *
+from user
+where name like 'j_';
+
+select *
+from user
+where name like '杰_';
+
+查询null
+select *
+from user
+where birthday is null;   注意不能用=
+
+用order by进行排序输出
+升序：
+select *
+from user
+order by id;  (默认是升序asc,降序desc)
+
+降序：
+select *
+from user
+order by id desc;
+
+select *
+from user
+where name like 'm%'     (where 语句必须在order by前)
+order by id desc;
+
+使用count()函数  (返回总行数，null不算)
+select count(*) as 总人数     
+from user;
+
+使用sum()函数,统计数值，非数值返回零
+select sum(id)
+from user;
+
+使用avg()函数求平均值
+select avg(id)
+from user;
+
+使用max(),min()求最大最小值,可以用到date类型中，max是最接近现在的时间，min是越以前的时间
+select max(id),min(id)
+from user;
+
+having类别过滤器，主要用于group by后
+
+primary key表示主键,不能重复,不能为null,auto_increment自动从1开始生成（MySQL特有）
+create table users(
+  id int(6) primary key auto_increment,      
+  name varchar(20)
+);
+删除主键
+alter table users drop primary key;
+
+drop table if exists user
+create table user(
+  id int,
+  name varchar(20),
+  password varchar(20)
+);
+drop table if exists student4;
+create table if not exists student4(
+  id int primary key auto_increment,   #主键  不能重复 不能为空 alter table student4 drop primary key 删除主键auto_increment主键从1开始自动生成mysql特有
+  name varchar(20)not null unique, #唯一约束 除null外不能重复
+  age varchar(20),
+  num varchar(20),
+  zhuanye varchar(40)
+);
+
+create table if not exists student5(
+  id int primary key auto_increment,   #主键  不能重复 不能为空 alter table student4 drop primary key 删除主键auto_increment主键从1开始自动生成mysql特有
+  name varchar(20)not null, #唯一约束 除null外不能重复
+  age varchar(20),
+  num varchar(20),
+  zhuanye varchar(40)
+  sid int,
+  constraint sid_FK foreign key(sid) references student4(id)
+);
+
+
+insert into student(name,age,num,zhuanye) values('aa','12','123','aaa');
+
+select Sno,Cno,sum(Grade)
+from student3
+group by Sno;
+
+select *
+from student3
+where Sno='150101225';
+
+delete
+from student4
+where id=1;
+
+select max(Grade) from student3 where Cno='1';
+
+select Sno from student3 group by Sno;
+
+select a.Cpno from student2 a;
+select a.Cno,b.Cpno,c.Cname from student2 a,student2 b,student2 c where b.Cpno=a.Cno and a.Cno=b.Cpno; 
+
+select Sname,Sage from student1 where Sage>(select max(Sage) from student1 where Ssex='女');
+
+select student1.Sno,student1.Sname from student1,student3 where student1.Sno=student3.Sno and student3.Cno='5';
+
+select distinct student1.* from student1,student3 where (student3.Cno='2' or student3.Cno='3')and student1.Sno=student3.Sno;
+
+insert into student1(Sno,Sname,Ssex,Sage,Sinst) values('2014210254','王皓宇','男',20,'AC');
+
+update student3 set Grade=80 where Sno='150102005'and Cno='1';
+
+delete from student3 where Sno='150102005'and Cno='1';
+
+select a.Cname,b.Cname,c.Cname from student2 a,student2 b,student2 c where a.Cpno=b.Cno and b.Cpno=c.Cno;
+
+
+2906439909
+
+创建cust表
+create table customer(
+id int primary key auto_increment,
+name varchar(20),
+gender varchar(10),
+birthday date,
+cellphone varchar(20),
+email varchar(40),
+preference varchar(100),
+type varchar(40),
+description varchar(255)
+);
+
+mysql创建数据库命令:1.show databases //显示数据库
+ 2.create database student(数据库名) //创建数据库student
+ 3.use student //进入student数据库
+ 4.create table studinfo(表名) (sno int primary key,sage int(2))
+ ............ // 创建表studinfo
+ 5.show table //显示表
+ ..............
+ 6.drop database student //删除student数据库
